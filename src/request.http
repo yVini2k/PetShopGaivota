@@ -1,0 +1,2 @@
+### Listar agendamentos com paginação
+GET http://localhost:8080/api/agendamentos?page=0&size=10
