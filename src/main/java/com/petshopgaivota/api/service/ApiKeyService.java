@@ -33,6 +33,20 @@ public class ApiKeyService {
         return chave;
     }
 
+    /**
+     * Garante que a chave fixa (vinda de variável de ambiente) exista no banco, ativa e como ADMIN.
+     * Idempotente: pode ser chamada a cada inicialização, mesmo com o banco zerado.
+     */
+    public void garantirChaveFixa(String chave, String proprietario) {
+        String hash = sha256(chave);
+        ApiKey k = repo.findByChaveHash(hash).orElseGet(ApiKey::new);
+        k.setChaveHash(hash);
+        k.setProprietario(proprietario);
+        k.setNivel(NivelAcesso.ADMIN);
+        k.setAtiva(true);
+        repo.save(k);
+    }
+
     public Optional<ApiKey> validar(String chave) {
         return repo.findByChaveHashAndAtivaTrue(sha256(chave));
     }
