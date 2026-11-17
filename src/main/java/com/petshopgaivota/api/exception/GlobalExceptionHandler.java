@@ -55,23 +55,17 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // 404 - Recursos não encontrados
+    // 404 - Recurso não encontrado (sem JSON)
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ErroResponse> recursoNaoEncontrado(
+    public ResponseEntity<Void> recursoNaoEncontrado(
             NoResourceFoundException ex) {
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                ErroResponse.of(
-                        HttpStatus.NOT_FOUND,
-                        "Recurso não encontrado",
-                        List.of()
-                )
-        );
+        return ResponseEntity.notFound().build();
     }
 
     // Preserva os status HTTP definidos pela aplicação
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ErroResponse> erroComStatus(
+    public ResponseEntity<?> erroComStatus(
             ResponseStatusException ex) {
 
         HttpStatus status = HttpStatus.resolve(
@@ -80,6 +74,11 @@ public class GlobalExceptionHandler {
 
         if (status == null) {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        // 404 - Retorna apenas o status, sem JSON
+        if (status == HttpStatus.NOT_FOUND) {
+            return ResponseEntity.notFound().build();
         }
 
         String mensagem = ex.getReason() != null
