@@ -125,7 +125,7 @@ public class ServicoController {
         Servico servico = service.buscarPorId(id);
 
         if (servico == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         EntityModel<Servico> resultado = EntityModel.of(
@@ -181,7 +181,7 @@ public class ServicoController {
         Servico servicoExistente = service.buscarPorId(id);
 
         if (servicoExistente == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         servicoExistente.setTipo(servico.getTipo());
@@ -215,7 +215,7 @@ public class ServicoController {
         Servico servico = service.buscarPorId(id);
 
         if (servico == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         service.excluir(id);

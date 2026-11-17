@@ -135,7 +135,7 @@ public class AgendamentoController {
         Agendamento agendamento = service.buscarPorId(id);
 
         if (agendamento == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         return ResponseEntity.ok(toModel(agendamento));
@@ -159,7 +159,7 @@ public class AgendamentoController {
         Agendamento a = service.buscarPorId(id);
 
         if (a == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         return ResponseEntity.ok(new AgendamentoV2Response(
@@ -227,7 +227,7 @@ public class AgendamentoController {
         Agendamento agendamentoExistente = service.buscarPorId(id);
 
         if (agendamentoExistente == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         agendamentoExistente.setData(agendamento.getData());
@@ -257,11 +257,22 @@ public class AgendamentoController {
         Agendamento agendamento = service.buscarPorId(id);
 
         if (agendamento == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
+
 
         service.excluir(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    // Permite buscar agendamento sem informar a versão.
+    // Usa a V1 como padrão.
+    @io.swagger.v3.oas.annotations.Hidden
+    @GetMapping(value = "/{id}", headers = "!X-API-Version")
+    public ResponseEntity<EntityModel<Agendamento>> buscarPorIdPadrao(
+            @PathVariable Long id) {
+
+        return buscarPorIdV1(id);
     }
 }

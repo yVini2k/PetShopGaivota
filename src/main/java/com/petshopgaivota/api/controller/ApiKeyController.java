@@ -69,7 +69,7 @@ public class ApiKeyController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> revogar(@PathVariable Long id) {
         if (!service.revogar(id)) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
         return ResponseEntity.noContent().build();
     }

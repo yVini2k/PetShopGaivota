@@ -86,15 +86,9 @@ public class OpenApiConfig {
                                 (metodo, operacao) -> {
 
                                     // Resposta de Rate Limiting.
-                                    operacao.getResponses().addApiResponse(
-                                            "429",
+                                    operacao.getResponses().addApiResponse("429",
                                             new io.swagger.v3.oas.models.responses.ApiResponse()
-                                                    .description(
-                                                            "Limite de requisições excedido. "
-                                                                    + "Consulte o cabeçalho Retry-After."
-                                                    )
-                                    );
-
+                                                    .description("Limite de requisições excedido. Veja o header Retry-After."));
                                     // GET público, exceto gerenciamento de chaves.
                                     boolean leituraPublica =
                                             metodo == PathItem.HttpMethod.GET

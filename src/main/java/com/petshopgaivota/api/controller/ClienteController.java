@@ -142,7 +142,7 @@ public class ClienteController {
         Cliente cliente = service.buscarPorId(id);
 
         if (cliente == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         EntityModel<Cliente> resultado = EntityModel.of(
@@ -219,7 +219,7 @@ public class ClienteController {
         Cliente clienteExistente = service.buscarPorId(id);
 
         if (clienteExistente == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         clienteExistente.setNome(cliente.getNome());
@@ -263,7 +263,7 @@ public class ClienteController {
         Cliente cliente = service.buscarPorId(id);
 
         if (cliente == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         service.excluir(id);

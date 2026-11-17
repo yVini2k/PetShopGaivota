@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.validation.constraints.Positive;
+
+
 
 @Entity
 @Table(name = "servicos")
@@ -21,6 +24,7 @@ public class Servico {
     private TipoServico tipo;
 
     @NotNull(message = "O preço é obrigatório")
+    @Positive(message = "O preço deve ser maior que zero")
     private Double preco;
 
     @JsonIgnore

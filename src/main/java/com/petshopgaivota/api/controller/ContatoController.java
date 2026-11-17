@@ -144,7 +144,7 @@ public class ContatoController {
         Contato contato = service.buscarPorId(id);
 
         if (contato == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         EntityModel<Contato> resultado = EntityModel.of(
@@ -221,7 +221,7 @@ public class ContatoController {
         Contato contatoExistente = service.buscarPorId(id);
 
         if (contatoExistente == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         contatoExistente.setTelefone(contato.getTelefone());
@@ -264,7 +264,7 @@ public class ContatoController {
         Contato contato = service.buscarPorId(id);
 
         if (contato == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         service.excluir(id);

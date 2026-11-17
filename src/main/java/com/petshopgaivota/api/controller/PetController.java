@@ -125,7 +125,7 @@ public class PetController {
         Pet pet = service.buscarPorId(id);
 
         if (pet == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         EntityModel<Pet> resultado = EntityModel.of(
@@ -181,7 +181,7 @@ public class PetController {
         Pet petExistente = service.buscarPorId(id);
 
         if (petExistente == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         petExistente.setNome(pet.getNome());
@@ -217,7 +217,7 @@ public class PetController {
         Pet pet = service.buscarPorId(id);
 
         if (pet == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         service.excluir(id);

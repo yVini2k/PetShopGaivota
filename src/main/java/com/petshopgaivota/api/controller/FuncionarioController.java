@@ -83,7 +83,7 @@ public class FuncionarioController {
         Funcionario funcionario = service.buscarPorId(id);
 
         if (funcionario == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         return ResponseEntity.ok(funcionario);
@@ -138,7 +138,7 @@ public class FuncionarioController {
         Funcionario funcionarioExistente = service.buscarPorId(id);
 
         if (funcionarioExistente == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         funcionarioExistente.setNome(funcionario.getNome());
@@ -169,7 +169,7 @@ public class FuncionarioController {
         Funcionario funcionario = service.buscarPorId(id);
 
         if (funcionario == null) {
-            return ResponseEntity.notFound().build();
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
         }
 
         service.excluir(id);
