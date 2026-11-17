@@ -1,5 +1,6 @@
 package com.petshopgaivota.api.entity;
-
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -25,9 +26,13 @@ public class Cliente {
     @Email(message = "Digite um email válido")
     private String email;
 
+
+    @NotNull(message = "O contato é obrigatório")
+    @Valid
     @OneToOne
     @JoinColumn(name = "contato_id")
     private Contato contato;
+
 
     @JsonIgnore
     @OneToMany(mappedBy = "cliente")

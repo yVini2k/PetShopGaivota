@@ -1,3 +1,4 @@
+
 package com.petshopgaivota.api.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,38 +10,135 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
 @RestControllerAdvice(basePackages = "com.petshopgaivota.api.controller")
 public class GlobalExceptionHandler {
 
+    // 400 - Erros de Bean Validation
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErroResponse> validacao(MethodArgumentNotValidException ex) {
-        List<String> detalhes = ex.getBindingResult().getFieldErrors().stream()
+    public ResponseEntity<ErroResponse> validacao(
+            MethodArgumentNotValidException ex) {
+
+        List<String> detalhes = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
                 .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .toList();
-        return ResponseEntity.badRequest()
-                .body(ErroResponse.of(HttpStatus.BAD_REQUEST, "Dados inválidos", detalhes));
+
+        return ResponseEntity.badRequest().body(
+                ErroResponse.of(
+                        HttpStatus.BAD_REQUEST,
+                        "Dados inválidos",
+                        detalhes
+                )
+        );
     }
 
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class,
+    // 400 - Requisições inválidas
+    @ExceptionHandler({
+            MethodArgumentTypeMismatchException.class,
             HttpMessageNotReadableException.class,
-            MissingRequestHeaderException.class})
+            MissingRequestHeaderException.class
+    })
     public ResponseEntity<ErroResponse> requisicaoInvalida(Exception ex) {
-        return ResponseEntity.badRequest().body(ErroResponse.of(
-                HttpStatus.BAD_REQUEST, "Requisição inválida", List.of(ex.getMessage())));
+
+        return ResponseEntity.badRequest().body(
+                ErroResponse.of(
+                        HttpStatus.BAD_REQUEST,
+                        "Requisição inválida",
+                        List.of("Verifique os parâmetros e o corpo da requisição.")
+                )
+        );
     }
 
+    // 404 - Recursos não encontrados
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErroResponse> recursoNaoEncontrado(
+            NoResourceFoundException ex) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ErroResponse.of(
+                        HttpStatus.NOT_FOUND,
+                        "Recurso não encontrado",
+                        List.of()
+                )
+        );
+    }
+
+    // Preserva os status HTTP definidos pela aplicação
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErroResponse> erroComStatus(
+            ResponseStatusException ex) {
+
+        HttpStatus status = HttpStatus.resolve(
+                ex.getStatusCode().value()
+        );
+
+        if (status == null) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        String mensagem = ex.getReason() != null
+                ? ex.getReason()
+                : "Erro na requisição";
+
+        return ResponseEntity.status(status).body(
+                ErroResponse.of(
+                        status,
+                        mensagem,
+                        List.of()
+                )
+        );
+    }
+
+    // 409 - Conflito de integridade no banco
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErroResponse> conflito(DataIntegrityViolationException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ErroResponse.of(
-                HttpStatus.CONFLICT, "Conflito de dados ou requisição duplicada", List.of()));
+    public ResponseEntity<ErroResponse> conflito(
+            DataIntegrityViolationException ex) {
+
+        ex.printStackTrace();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ErroResponse.of(
+                        HttpStatus.CONFLICT,
+                        "Conflito de dados ou requisição duplicada",
+                        List.of()
+                )
+        );
     }
 
+    // 409 - Conflito de idempotência
+    @ExceptionHandler(ConflitoIdempotenciaException.class)
+    public ResponseEntity<ErroResponse> conflitoIdempotencia(
+            ConflitoIdempotenciaException ex) {
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ErroResponse.of(
+                        HttpStatus.CONFLICT,
+                        "Conflito de idempotência",
+                        List.of(ex.getMessage())
+                )
+        );
+    }
+
+    // 500 - Erros inesperados
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErroResponse> generico(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErroResponse.of(
-                HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor", List.of()));
+
+        ex.printStackTrace();
+
+        return ResponseEntity.status(
+                HttpStatus.INTERNAL_SERVER_ERROR
+        ).body(
+                ErroResponse.of(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Erro interno do servidor",
+                        List.of()
+                )
+        );
     }
 }

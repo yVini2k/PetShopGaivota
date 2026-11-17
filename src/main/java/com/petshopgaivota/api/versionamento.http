@@ -1,0 +1,9 @@
+### Testar versão 1
+GET http://localhost:8080/api/agendamentos/1
+X-API-Version: 1
+X-API-Key: 264765ee8ef147ba8506a007c1c9d1eb0f868986c90943a09f61926825fdcc8c
+
+### Testar versão 2
+GET http://localhost:8080/api/agendamentos/1
+X-API-Version: 2
+X-API-Key: 264765ee8ef147ba8506a007c1c9d1eb0f868986c90943a09f61926825fdcc8c

@@ -1,5 +1,5 @@
 package com.petshopgaivota.api.controller;
-
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.petshopgaivota.api.entity.Cliente;
 import com.petshopgaivota.api.service.ClienteService;
 import io.swagger.v3.oas.annotations.media.Content;

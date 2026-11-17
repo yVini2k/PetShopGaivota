@@ -11,9 +11,10 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.List;
-
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,9 +27,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
         name = "Contatos",
         description = "Operações relacionadas aos contatos do Pet Shop Gaivota"
 )
+
 @RestController
 @RequestMapping("/api/contatos")
+@SecurityRequirement(name = "apiKey")
 public class ContatoController {
+
 
     private final ContatoService service;
 

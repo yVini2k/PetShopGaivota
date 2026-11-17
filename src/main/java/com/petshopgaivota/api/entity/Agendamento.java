@@ -30,13 +30,17 @@ public class Agendamento {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
+
+    @NotNull(message = "O funcionário é obrigatório")
     @ManyToOne
     @JoinColumn(name = "funcionario_id")
     private Funcionario funcionario;
 
+    @NotNull(message = "O serviço é obrigatório")
     @ManyToOne
     @JoinColumn(name = "servico_id")
     private Servico servico;
+
 
     public Agendamento() {
     }

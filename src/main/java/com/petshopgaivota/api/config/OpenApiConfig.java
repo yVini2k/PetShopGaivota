@@ -1,3 +1,4 @@
+
 package com.petshopgaivota.api.config;
 
 import io.swagger.v3.oas.models.Components;
@@ -21,90 +22,145 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("Pet Shop Gaivota")
                         .version("2.0.0")
-
-                        // Descrição geral
                         .description(
-                                "O Pet Shop Gaivota é especializado em serviços de banho e tosa, " +
-                                        "oferecendo cuidado, higiene e bem-estar para cães e outros animais de estimação.\n\n" +
+                                "O Pet Shop Gaivota é especializado em serviços de banho e tosa, "
+                                        + "oferecendo cuidado, higiene e bem-estar para os animais de estimação.\n\n"
 
-                                        "Sistema desenvolvido para gerenciar clientes, pets, funcionários, " +
-                                        "serviços e agendamentos do Pet Shop Gaivota.\n\n" +
+                                        + "Sistema desenvolvido para gerenciar clientes, contatos, pets, "
+                                        + "funcionários, serviços e agendamentos do Pet Shop Gaivota.\n\n"
 
-                                        "Codificação: UTF-8. Idioma: Português do Brasil (pt-BR).\n\n" +
+                                        + "**Informações gerais**\n\n"
+                                        + "- Codificação: UTF-8.\n"
+                                        + "- Idioma: Português do Brasil (pt-BR).\n"
+                                        + "- Cliente: responsável pelo animal.\n"
+                                        + "- Contato: telefone e endereço do cliente.\n"
+                                        + "- Pet: animal cadastrado no sistema.\n"
+                                        + "- Funcionário: profissional responsável pelo atendimento.\n"
+                                        + "- Serviço: modalidade de banho e tosa.\n"
+                                        + "- Agendamento: atendimento programado.\n\n"
 
-                                        "- Cliente: responsável pelo animal.\n" +
-                                        "- Pet: animal cadastrado no sistema.\n" +
-                                        "- Funcionário: profissional responsável pelo atendimento.\n" +
-                                        "- Serviço: modalidade de banho e tosa oferecida pela loja.\n" +
-                                        "- Agendamento: registro de um atendimento programado.\n\n" +
-
-                                        "**Recursos avançados**\n\n" +
-                                        "- Autenticação: operações de escrita exigem o header `X-API-Key`. " +
-                                        "Gere uma chave em `POST /api/keys`.\n" +
-                                        "- Idempotência: envie `X-Idempotency-Key` no POST de agendamentos " +
-                                        "para evitar duplicidade.\n" +
-                                        "- Versionamento: o endpoint de busca por ID aceita `X-API-Version` " +
-                                        "com os valores 1 ou 2.\n" +
-                                        "- Rate limit: excedido o limite, a API responde 429 com o header `Retry-After`.\n"
+                                        + "**Recursos avançados**\n\n"
+                                        + "- **API Key:** operações de escrita exigem `X-API-Key`. "
+                                        + "A geração de chaves em `POST /api/keys` é pública; "
+                                        + "as demais operações de gerenciamento de chaves são protegidas.\n"
+                                        + "- **Idempotência:** utilize `X-Idempotency-Key` "
+                                        + "no cadastro de agendamentos para evitar duplicidade.\n"
+                                        + "- **Versionamento:** a busca de agendamentos por ID "
+                                        + "aceita `X-API-Version` com os valores 1 e 2.\n"
+                                        + "- **Rate Limiting:** requisições acima do limite "
+                                        + "recebem HTTP 429 e o cabeçalho `Retry-After`.\n"
+                                        + "- **Validação:** dados inválidos recebem HTTP 400 "
+                                        + "com mensagens explicativas.\n"
+                                        + "- **HATEOAS:** os recursos disponibilizam links "
+                                        + "para navegação entre endpoints."
                         )
-
-                        // Termos de serviço
-                        .termsOfService("https://petshopgaivota.com.br/termos")
-
-                        // Contato
                         .contact(new Contact()
                                 .name("Suporte Pet Shop Gaivota")
                                 .email("petshogaivota@gmail.com")
                         )
-
-                        // Licença MIT
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")
                         )
                 )
-                // Esquema de segurança usado pelo @SecurityRequirement(name = "apiKey")
                 .components(new Components()
-                        .addSecuritySchemes("apiKey", new SecurityScheme()
-                                .type(SecurityScheme.Type.APIKEY)
-                                .in(SecurityScheme.In.HEADER)
-                                .name("X-API-Key")
-                                .description("Chave de API gerada em POST /api/keys")
+                        .addSecuritySchemes("apiKey",
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .name("X-API-Key")
+                                        .description(
+                                                "Informe a chave original gerada "
+                                                        + "em POST /api/keys."
+                                        )
                         )
                 );
     }
 
-    // 401 e 429 vêm dos filtros, então o springdoc não os detecta sozinho
+    // Documenta as respostas geradas pelos filtros de segurança.
     @Bean
     public OpenApiCustomizer errosDeFiltros() {
-        return openApi -> openApi.getPaths().values().forEach(pathItem ->
-                pathItem.readOperationsMap().forEach((metodo, op) -> {
-                    op.getResponses().addApiResponse("429",
-                            new io.swagger.v3.oas.models.responses.ApiResponse()
-                                    .description("Limite de requisições excedido (veja o header Retry-After)"));
-                    if (metodo != PathItem.HttpMethod.GET) {
-                        op.getResponses().addApiResponse("401",
-                                new io.swagger.v3.oas.models.responses.ApiResponse()
-                                        .description("API Key ausente ou inválida"));
-                    }
-                }));
+        return openApi -> openApi.getPaths().forEach(
+                (caminho, pathItem) ->
+                        pathItem.readOperationsMap().forEach(
+                                (metodo, operacao) -> {
+
+                                    // Resposta de Rate Limiting.
+                                    operacao.getResponses().addApiResponse(
+                                            "429",
+                                            new io.swagger.v3.oas.models.responses.ApiResponse()
+                                                    .description(
+                                                            "Limite de requisições excedido. "
+                                                                    + "Consulte o cabeçalho Retry-After."
+                                                    )
+                                    );
+
+                                    // GET público, exceto gerenciamento de chaves.
+                                    boolean leituraPublica =
+                                            metodo == PathItem.HttpMethod.GET
+                                                    && !caminho.startsWith("/api/keys");
+
+                                    // Geração de API Key não exige autenticação.
+                                    boolean geracaoPublica =
+                                            metodo == PathItem.HttpMethod.POST
+                                                    && caminho.equals("/api/keys");
+
+                                    boolean operacaoProtegida =
+                                            !leituraPublica
+                                                    && !geracaoPublica
+                                                    && metodo != PathItem.HttpMethod.OPTIONS;
+
+                                    if (operacaoProtegida) {
+
+                                        // Documenta a autenticação no Swagger.
+                                        operacao.addSecurityItem(
+                                                new io.swagger.v3.oas.models.security.SecurityRequirement()
+                                                        .addList("apiKey")
+                                        );
+
+                                        // Resposta para chave ausente ou inválida.
+                                        operacao.getResponses().addApiResponse(
+                                                "401",
+                                                new io.swagger.v3.oas.models.responses.ApiResponse()
+                                                        .description(
+                                                                "API Key ausente, inválida ou revogada."
+                                                        )
+                                        );
+                                    }
+                                }
+                        )
+        );
     }
 
+    // Documentação geral da API.
     @Bean
     public GroupedOpenApi grupoGeral() {
-        return GroupedOpenApi.builder().group("geral")
-                .pathsToMatch("/api/**").build();
+        return GroupedOpenApi.builder()
+                .group("geral")
+                .pathsToMatch("/api/**")
+                .addOpenApiCustomizer(errosDeFiltros())
+                .build();
     }
 
+    // Documentação dos endpoints da versão 1.
     @Bean
     public GroupedOpenApi grupoV1() {
-        return GroupedOpenApi.builder().group("v1")
-                .pathsToMatch("/api/**").headersToMatch("X-API-Version=1").build();
+        return GroupedOpenApi.builder()
+                .group("v1")
+                .pathsToMatch("/api/**")
+                .headersToMatch("X-API-Version=1")
+                .addOpenApiCustomizer(errosDeFiltros())
+                .build();
     }
 
+    // Documentação dos endpoints da versão 2.
     @Bean
     public GroupedOpenApi grupoV2() {
-        return GroupedOpenApi.builder().group("v2")
-                .pathsToMatch("/api/**").headersToMatch("X-API-Version=2").build();
+        return GroupedOpenApi.builder()
+                .group("v2")
+                .pathsToMatch("/api/**")
+                .headersToMatch("X-API-Version=2")
+                .addOpenApiCustomizer(errosDeFiltros())
+                .build();
     }
 }

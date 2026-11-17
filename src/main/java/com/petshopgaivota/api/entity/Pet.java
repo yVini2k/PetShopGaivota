@@ -26,9 +26,11 @@ public class Pet {
     @Enumerated(EnumType.STRING)
     private TamanhoPet tamanho;
 
+    @NotNull(message = "O cliente é obrigatório")
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
+
 
     @JsonIgnore
     @OneToMany(mappedBy = "pet")

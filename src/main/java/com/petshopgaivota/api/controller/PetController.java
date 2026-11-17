@@ -1,5 +1,5 @@
 package com.petshopgaivota.api.controller;
-
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.petshopgaivota.api.entity.Pet;
 import com.petshopgaivota.api.service.PetService;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,9 +26,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
         name = "Pets",
         description = "Operações relacionadas aos pets do Pet Shop Gaivota"
 )
+
 @RestController
 @RequestMapping("/api/pets")
+@SecurityRequirement(name = "apiKey")
 public class PetController {
+
 
     private final PetService service;
 

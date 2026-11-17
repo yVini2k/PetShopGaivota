@@ -188,6 +188,8 @@ public class AgendamentoController {
             @ApiResponse(responseCode = "409", description = "Conflito de idempotência",
                     content = @Content(schema = @Schema(implementation = ErroResponse.class)))
     })
+
+
     @PostMapping
     public ResponseEntity<EntityModel<Agendamento>> salvar(
             @RequestHeader(value = "X-Idempotency-Key", required = false) String chave,
@@ -210,6 +212,7 @@ public class AgendamentoController {
             description = "Atualiza os dados de um agendamento existente."
     )
     @SecurityRequirement(name = "apiKey")
+
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Agendamento atualizado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos",

@@ -1,3 +1,4 @@
+
 package com.petshopgaivota.api.entity;
 
 import jakarta.persistence.Entity;
@@ -13,12 +14,39 @@ public class RegistroIdempotencia {
 
     private Long agendamentoId;
 
+    private String hashRequisicao;
+
     private Instant criadoEm = Instant.now();
 
-    public String getChave() { return chave; }
-    public void setChave(String chave) { this.chave = chave; }
-    public Long getAgendamentoId() { return agendamentoId; }
-    public void setAgendamentoId(Long agendamentoId) { this.agendamentoId = agendamentoId; }
-    public Instant getCriadoEm() { return criadoEm; }
-    public void setCriadoEm(Instant criadoEm) { this.criadoEm = criadoEm; }
+    public String getChave() {
+        return chave;
+    }
+
+    public void setChave(String chave) {
+        this.chave = chave;
+    }
+
+    public Long getAgendamentoId() {
+        return agendamentoId;
+    }
+
+    public void setAgendamentoId(Long agendamentoId) {
+        this.agendamentoId = agendamentoId;
+    }
+
+    public String getHashRequisicao() {
+        return hashRequisicao;
+    }
+
+    public void setHashRequisicao(String hashRequisicao) {
+        this.hashRequisicao = hashRequisicao;
+    }
+
+    public Instant getCriadoEm() {
+        return criadoEm;
+    }
+
+    public void setCriadoEm(Instant criadoEm) {
+        this.criadoEm = criadoEm;
+    }
 }
