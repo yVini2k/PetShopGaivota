@@ -2,6 +2,7 @@ package com.petshopgaivota.api.controller;
 
 import com.petshopgaivota.api.entity.Funcionario;
 import com.petshopgaivota.api.service.FuncionarioService;
+import io.swagger.v3.oas.annotations.media.Content;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -73,7 +74,7 @@ public class FuncionarioController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Funcionário não encontrado"
+                    description = "Funcionário não encontrado",content = @Content
             )
     })
     @GetMapping("/{id}")
@@ -126,7 +127,7 @@ public class FuncionarioController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Funcionário não encontrado"
+                    description = "Funcionário não encontrado",content = @Content
             )
     })
     @PutMapping("/{id}")
@@ -159,7 +160,7 @@ public class FuncionarioController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Funcionário não encontrado"
+                    description = "Funcionário não encontrado",content = @Content
             )
     })
     @DeleteMapping("/{id}")

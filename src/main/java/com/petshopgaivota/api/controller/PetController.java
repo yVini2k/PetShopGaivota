@@ -2,6 +2,7 @@ package com.petshopgaivota.api.controller;
 
 import com.petshopgaivota.api.entity.Pet;
 import com.petshopgaivota.api.service.PetService;
+import io.swagger.v3.oas.annotations.media.Content;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -112,7 +113,7 @@ public class PetController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Pet encontrado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Pet não encontrado")
+            @ApiResponse(responseCode = "404", description = "Pet não encontrado",content = @Content)
     })
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Pet>> buscarPorId(
@@ -167,7 +168,7 @@ public class PetController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Pet atualizado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-            @ApiResponse(responseCode = "404", description = "Pet não encontrado")
+            @ApiResponse(responseCode = "404", description = "Pet não encontrado",content = @Content)
     })
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<Pet>> atualizar(
@@ -204,7 +205,7 @@ public class PetController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Pet excluído com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Pet não encontrado")
+            @ApiResponse(responseCode = "404", description = "Pet não encontrado",content = @Content)
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(

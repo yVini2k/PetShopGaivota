@@ -25,6 +25,7 @@ public class Agendamento {
     @Enumerated(EnumType.STRING)
     private StatusAgendamento status;
 
+    @NotNull(message = "Pet é obrigatório")
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;

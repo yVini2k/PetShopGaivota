@@ -2,6 +2,7 @@ package com.petshopgaivota.api.controller;
 
 import com.petshopgaivota.api.entity.Contato;
 import com.petshopgaivota.api.service.ContatoService;
+import io.swagger.v3.oas.annotations.media.Content;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -129,7 +130,7 @@ public class ContatoController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Contato não encontrado"
+                    description = "Contato não encontrado",content = @Content
             )
     })
     @GetMapping("/{id}")
@@ -205,7 +206,7 @@ public class ContatoController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Contato não encontrado"
+                    description = "Contato não encontrado",content = @Content
             )
     })
     @PutMapping("/{id}")
@@ -249,7 +250,7 @@ public class ContatoController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Contato não encontrado"
+                    description = "Contato não encontrado",content = @Content
             )
     })
     @DeleteMapping("/{id}")
