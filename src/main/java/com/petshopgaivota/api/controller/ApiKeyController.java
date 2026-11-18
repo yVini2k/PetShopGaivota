@@ -4,6 +4,7 @@ import com.petshopgaivota.api.enums.NivelAcesso;
 import com.petshopgaivota.api.exception.ErroResponse;
 import com.petshopgaivota.api.service.ApiKeyService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,6 +44,20 @@ public class ApiKeyController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos",
                     content = @Content(schema = @Schema(implementation = ErroResponse.class)))
     })
+    // Esqueleto do corpo da requisição (Swagger): substitua os valores depois
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(
+                            name = "Esqueleto",
+                            value = """
+                            {
+                              "proprietario": "Nome do proprietario"
+                            }
+                            """
+                    )
+            )
+    )
     @PostMapping
     public ResponseEntity<NovaChaveResponse> gerar(@Valid @RequestBody NovaChaveRequest req) {
         String chave = service.gerar(req.proprietario(), NivelAcesso.USER);
@@ -69,7 +84,7 @@ public class ApiKeyController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> revogar(@PathVariable Long id) {
         if (!service.revogar(id)) {
-            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
     }
