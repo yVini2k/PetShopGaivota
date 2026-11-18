@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -125,7 +126,7 @@ public class PetController {
         Pet pet = service.buscarPorId(id);
 
         if (pet == null) {
-            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
+            return ResponseEntity.notFound().build();
         }
 
         EntityModel<Pet> resultado = EntityModel.of(
@@ -147,6 +148,29 @@ public class PetController {
             @ApiResponse(responseCode = "201", description = "Pet cadastrado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
+    // Esqueleto do corpo da requisição (Swagger): substitua os valores depois
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(
+                            name = "Esqueleto",
+                            value = """
+                            {
+                              "nome": "Nome do pet",
+                              "tamanho": "PEQUENO",
+                              "cliente": {
+                                "id": 1
+                              },
+                              "servicos": [
+                                {
+                                  "id": 1
+                                }
+                              ]
+                            }
+                            """
+                    )
+            )
+    )
     @PostMapping
     public ResponseEntity<EntityModel<Pet>> salvar(
             @Valid @RequestBody Pet pet) {
@@ -181,7 +205,7 @@ public class PetController {
         Pet petExistente = service.buscarPorId(id);
 
         if (petExistente == null) {
-            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
+            return ResponseEntity.notFound().build();
         }
 
         petExistente.setNome(pet.getNome());
@@ -217,7 +241,7 @@ public class PetController {
         Pet pet = service.buscarPorId(id);
 
         if (pet == null) {
-            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
+            return ResponseEntity.notFound().build();
         }
 
         service.excluir(id);

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -83,7 +84,7 @@ public class FuncionarioController {
         Funcionario funcionario = service.buscarPorId(id);
 
         if (funcionario == null) {
-            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
+            return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(funcionario);
@@ -103,6 +104,21 @@ public class FuncionarioController {
                     description = "Dados inválidos"
             )
     })
+    // Esqueleto do corpo da requisição (Swagger): substitua os valores depois
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(
+                            name = "Esqueleto",
+                            value = """
+                            {
+                              "nome": "Nome do funcionario",
+                              "funcao": "BANHISTA"
+                            }
+                            """
+                    )
+            )
+    )
     @PostMapping
     public ResponseEntity<Funcionario> salvar(
             @Valid @RequestBody Funcionario funcionario) {
@@ -138,7 +154,7 @@ public class FuncionarioController {
         Funcionario funcionarioExistente = service.buscarPorId(id);
 
         if (funcionarioExistente == null) {
-            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
+            return ResponseEntity.notFound().build();
         }
 
         funcionarioExistente.setNome(funcionario.getNome());
@@ -169,7 +185,7 @@ public class FuncionarioController {
         Funcionario funcionario = service.buscarPorId(id);
 
         if (funcionario == null) {
-            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Recurso não encontrado");
+            return ResponseEntity.notFound().build();
         }
 
         service.excluir(id);
