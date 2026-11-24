@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class ApiKeyInicializador implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(ApiKeyInicializador.class);
-    private static final int TAMANHO_MINIMO = 32;
+    private static final int TAMANHO_MINIMO = 8;
 
     private final ApiKeyService service;
     private final String chaveFixa;

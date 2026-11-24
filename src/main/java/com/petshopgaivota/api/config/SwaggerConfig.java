@@ -1,4 +1,3 @@
-
 package com.petshopgaivota.api.config;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,9 +51,10 @@ public class SwaggerConfig {
                             original.getInputStream(),
                             StandardCharsets.UTF_8);
 
+                    // Ao mudar o swagger.css, aumente o número de v= para furar o cache.
                     html = html.replace(
                             "</head>",
-                            "<link rel=\"stylesheet\" href=\"/swagger.css?v=3\">" +
+                            "<link rel=\"stylesheet\" href=\"/swagger.css?v=4\">" +
                                     "</head>");
 
                     return new TransformedResource(

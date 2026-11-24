@@ -9,6 +9,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.customizers.OpenApiCustomizer;
+import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,8 +42,7 @@ public class OpenApiConfig {
             "/api/clientes",
             obj("nome", "Carlos Silva",
                     "email", "carlos@email.com",
-                    "contato", obj("id", 1,
-                            "telefone", "11977776666",
+                    "contato", obj("telefone", "11977776666",
                             "endereco", "Rua das Gaivotas, 123 - Centro")),
 
             "/api/pets",
@@ -76,12 +76,13 @@ public class OpenApiConfig {
 
             "/api/contatos",
             "**Como usar:** exige `X-API-Key`. `telefone`: 10 ou 11 dígitos, somente números. "
-                    + "`endereco`: de 5 a 200 caracteres. Cadastre o contato **antes** do cliente.",
+                    + "`endereco`: de 5 a 200 caracteres. Normalmente o contato é criado junto com o "
+                    + "cliente em `POST /api/clientes`; este endpoint faz o cadastro avulso de um contato.",
 
             "/api/clientes",
             "**Como usar:** exige `X-API-Key`. `nome`: 3 a 100 caracteres. `email`: formato válido. "
-                    + "`contato`: deve ser um contato já cadastrado em `POST /api/contatos`; "
-                    + "envie o `id` retornado e também `telefone` e `endereco`, pois o contato é validado.",
+                    + "`contato`: obrigatório; informe `telefone` (10 ou 11 dígitos) e `endereco` "
+                    + "(5 a 200 caracteres). O contato é criado junto com o cliente; não envie `id`.",
 
             "/api/pets",
             "**Como usar:** exige `X-API-Key`. `nome`: 2 a 50 caracteres. "
@@ -129,11 +130,10 @@ public class OpenApiConfig {
 
                                         + "**Ordem recomendada de cadastro**\n\n"
                                         + "1. `POST /api/keys` — gerar a chave de API (ou usar a chave fixa do servidor).\n"
-                                        + "2. `POST /api/contatos` — cadastrar o contato.\n"
-                                        + "3. `POST /api/clientes` — cadastrar o cliente, vinculando o contato.\n"
-                                        + "4. `POST /api/servicos` e `POST /api/funcionarios` — cadastrar serviços e funcionários.\n"
-                                        + "5. `POST /api/pets` — cadastrar o pet, vinculando o cliente.\n"
-                                        + "6. `POST /api/agendamentos` — agendar, vinculando pet, funcionário e serviço.\n\n"
+                                        + "2. `POST /api/clientes` — cadastrar o cliente (o contato é criado junto).\n"
+                                        + "3. `POST /api/servicos` e `POST /api/funcionarios` — cadastrar serviços e funcionários.\n"
+                                        + "4. `POST /api/pets` — cadastrar o pet, vinculando o cliente.\n"
+                                        + "5. `POST /api/agendamentos` — agendar, vinculando pet, funcionário e serviço.\n\n"
 
                                         + "**Recursos avançados**\n\n"
                                         + "- **API Key:** operações de escrita exigem `X-API-Key`. "
@@ -248,34 +248,31 @@ public class OpenApiConfig {
         );
     }
 
-    // Documentação geral da API.
-    @Bean
-    public GroupedOpenApi grupoGeral() {
-        return GroupedOpenApi.builder()
-                .group("geral")
-                .pathsToMatch("/api/**")
-                .addOpenApiCustomizer(errosDeFiltros())
-                .build();
+    // Esconde, no grupo, o endpoint que pertence a outra versão.
+    private static OperationCustomizer ocultar(String... metodos) {
+        List<String> ocultos = List.of(metodos);
+        return (operation, handlerMethod) ->
+                ocultos.contains(handlerMethod.getMethod().getName()) ? null : operation;
     }
 
-    // Documentação dos endpoints da versão 1.
+    // Versão 1: API completa (padrão).
     @Bean
     public GroupedOpenApi grupoV1() {
         return GroupedOpenApi.builder()
                 .group("v1")
                 .pathsToMatch("/api/**")
-                .headersToMatch("X-API-Version=1")
+                .addOperationCustomizer(ocultar("buscarPorIdV2"))
                 .addOpenApiCustomizer(errosDeFiltros())
                 .build();
     }
 
-    // Documentação dos endpoints da versão 2.
+    // Versão 2: API completa, com a busca por ID em formato V2.
     @Bean
     public GroupedOpenApi grupoV2() {
         return GroupedOpenApi.builder()
                 .group("v2")
                 .pathsToMatch("/api/**")
-                .headersToMatch("X-API-Version=2")
+                .addOperationCustomizer(ocultar("buscarPorIdV1"))
                 .addOpenApiCustomizer(errosDeFiltros())
                 .build();
     }

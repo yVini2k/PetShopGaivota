@@ -185,7 +185,7 @@ public class ClienteController {
                               "nome": "Nome do cliente",
                               "email": "cliente@email.com",
                               "contato": {
-                                "id": 1,
+                           
                                 "telefone": "11999999999",
                                 "endereco": "Rua Exemplo, 123 - Bairro"
                               }

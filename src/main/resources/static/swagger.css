@@ -58,18 +58,79 @@ body,
 ===================================================== */
 
 .swagger-ui .topbar {
-    background: var(--bg-topbar) !important;
+    background: linear-gradient(90deg, #090909 0%, #141414 65%, #1F1409 100%) !important;
     border-bottom: 2px solid var(--orange);
-    padding: 12px 0;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+    padding: 14px 0;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
 }
 
 .swagger-ui .topbar-wrapper {
     max-width: 1250px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
 }
 
 .swagger-ui .topbar a {
     color: var(--text-main) !important;
+}
+
+/* Logo e nome: substituem o logo padrão do Swagger */
+.swagger-ui .topbar-wrapper .link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 0 1 auto;
+    max-width: none;
+    text-decoration: none;
+}
+
+.swagger-ui .topbar-wrapper .link img,
+.swagger-ui .topbar-wrapper .link span,
+.swagger-ui .topbar-wrapper .link svg {
+    display: none !important;
+}
+
+.swagger-ui .topbar-wrapper .link::before {
+    content: "";
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    background: url("https://st3.depositphotos.com/1533030/14734/v/450/depositphotos_147347321-stock-illustration-ocean-logo-design.jpg") center / contain no-repeat;
+    filter: drop-shadow(0 2px 6px rgba(242, 140, 40, 0.35));
+}
+
+.swagger-ui .topbar-wrapper .link::after {
+    content: "Pet Shop Gaivota";
+    color: #FFFFFF;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+}
+
+/* Seletor de versão (v1 / v2) */
+.swagger-ui .topbar .download-url-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.swagger-ui .topbar .download-url-wrapper .select-label {
+    color: var(--text-secondary) !important;
+}
+
+.swagger-ui .topbar .download-url-wrapper .select-label span {
+    color: var(--text-secondary) !important;
+    font-weight: 600;
+}
+
+.swagger-ui .topbar .download-url-wrapper select {
+    border: 2px solid var(--orange) !important;
+    background: var(--bg-input) !important;
+    color: var(--text-main) !important;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 /* =====================================================
@@ -476,6 +537,20 @@ body,
 ===================================================== */
 
 @media (max-width: 768px) {
+    .swagger-ui .topbar-wrapper {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .swagger-ui .topbar-wrapper .link::after {
+        font-size: 18px;
+    }
+
+    .swagger-ui .topbar .download-url-wrapper {
+        flex-basis: 100%;
+        justify-content: flex-start;
+    }
+
     .swagger-ui .wrapper {
         padding: 15px;
     }
