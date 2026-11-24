@@ -1,6 +1,6 @@
-
 package com.petshopgaivota.api.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -94,11 +94,40 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // 409 - Conflito de integridade no banco
+    // Violação de integridade: distingue referência inexistente, exclusão bloqueada e duplicidade.
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErroResponse> conflito(
-            DataIntegrityViolationException ex) {
+    public ResponseEntity<ErroResponse> integridade(
+            DataIntegrityViolationException ex,
+            HttpServletRequest request) {
 
+        String estado = sqlState(ex);
+        boolean chaveEstrangeira = "23503".equals(estado) || "23506".equals(estado);
+        boolean exclusao = "DELETE".equals(request.getMethod());
+
+        // 400 - Referência a um registro que não existe (cliente, pet, funcionário, serviço...)
+        if (chaveEstrangeira && !exclusao) {
+            return ResponseEntity.badRequest().body(
+                    ErroResponse.of(
+                            HttpStatus.BAD_REQUEST,
+                            "Referência inválida",
+                            List.of("Um dos registros informados (cliente, contato, pet, "
+                                    + "funcionário ou serviço) não existe. Cadastre-o antes de usá-lo.")
+                    )
+            );
+        }
+
+        // 409 - Exclusão bloqueada porque o registro está em uso
+        if (chaveEstrangeira) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    ErroResponse.of(
+                            HttpStatus.CONFLICT,
+                            "Registro em uso",
+                            List.of("Este registro está vinculado a outros e não pode ser excluído.")
+                    )
+            );
+        }
+
+        // 409 - Duplicidade ou outro conflito de dados
         ex.printStackTrace();
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
@@ -108,6 +137,16 @@ public class GlobalExceptionHandler {
                         List.of()
                 )
         );
+    }
+
+    // Procura o código SQLState na cadeia de causas da exceção.
+    private static String sqlState(Throwable ex) {
+        for (Throwable t = ex; t != null; t = t.getCause()) {
+            if (t instanceof java.sql.SQLException sql && sql.getSQLState() != null) {
+                return sql.getSQLState();
+            }
+        }
+        return null;
     }
 
     // 409 - Conflito de idempotência

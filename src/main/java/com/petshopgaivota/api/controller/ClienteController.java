@@ -30,7 +30,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
         description = "Operações relacionadas aos clientes do Pet Shop Gaivota"
 )
 @RestController
-@RequestMapping("/api/clientes")
+@RequestMapping(
+        value = "/api/clientes",
+        headers = "X-API-Version!=2"
+)
 public class ClienteController {
 
     private final ClienteService service;
